@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "compare-app"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/your-repo/your-project.git'  // Replace with your repo URL
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
+            }
+        }
+
+        stage('Run Comparison') {
+            steps {
+                script {
+                    sh "docker run --rm ${IMAGE_NAME} 10 20"
+                }
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME} -f"
+                }
+            }
+        }
+    }
+}
